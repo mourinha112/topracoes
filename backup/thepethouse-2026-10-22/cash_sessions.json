@@ -1,0 +1,92 @@
+[
+{
+"id": 1,
+"saldo_inicial": 0,
+"saldo_final": null,
+"status": "fechado",
+"observacao_fechamento": null,
+"opened_at": "2026-02-24T18:31:45.484819+00:00",
+"closed_at": null
+},
+{
+"id": 2,
+"saldo_inicial": 100,
+"saldo_final": 100,
+"status": "fechado",
+"observacao_fechamento": "",
+"opened_at": "2026-02-24T23:57:47.755702+00:00",
+"closed_at": "2026-02-25T00:05:58.345+00:00"
+},
+{
+"id": 3,
+"saldo_inicial": 0,
+"saldo_final": 452.356,
+"status": "fechado",
+"observacao_fechamento": "",
+"opened_at": "2026-10-13T17:01:48.851325+00:00",
+"closed_at": "2026-10-15T21:44:54.524+00:00"
+},
+{
+"id": 4,
+"saldo_inicial": 0,
+"saldo_final": 257.457,
+"status": "fechado",
+"observacao_fechamento": "",
+"opened_at": "2026-10-16T12:17:50.981792+00:00",
+"closed_at": "2026-10-16T21:49:10.78+00:00"
+},
+{
+"id": 5,
+"saldo_inicial": 0,
+"saldo_final": 198.988,
+"status": "fechado",
+"observacao_fechamento": "",
+"opened_at": "2026-10-16T21:57:27.698583+00:00",
+"closed_at": "2026-10-16T22:00:10.36+00:00"
+},
+{
+"id": 6,
+"saldo_inicial": 0,
+"saldo_final": 165.355,
+"status": "fechado",
+"observacao_fechamento": "",
+"opened_at": "2026-10-17T12:09:26.851029+00:00",
+"closed_at": "2026-10-17T22:17:57.153+00:00"
+},
+{
+"id": 7,
+"saldo_inicial": 0,
+"saldo_final": 37.1915,
+"status": "fechado",
+"observacao_fechamento": "",
+"opened_at": "2026-10-19T12:06:10.49502+00:00",
+"closed_at": "2026-10-19T15:04:14.813+00:00"
+},
+{
+"id": 8,
+"saldo_inicial": 0,
+"saldo_final": 904.751,
+"status": "fechado",
+"observacao_fechamento": "",
+"opened_at": "2026-10-20T12:23:07.813727+00:00",
+"closed_at": "2026-10-20T22:43:35.723+00:00"
+},
+{
+"id": 9,
+"saldo_inicial": 0,
+"saldo_final": 369.15,
+"status": "fechado",
+"observacao_fechamento": "",
+"opened_at": "2026-10-21T11:52:02.746746+00:00",
+"closed_at": "2026-10-21T22:46:27.898+00:00"
+},
+{
+"id": 10,
+"saldo_inicial": 0,
+"saldo_final": 228.585,
+"status": "fechado",
+"observacao_fechamento": "",
+"opened_at": "2026-10-22T12:13:14.857576+00:00",
+"closed_at": "2026-10-22T22:29:24.371+00:00"
+}
+]

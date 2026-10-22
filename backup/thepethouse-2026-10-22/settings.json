@@ -1,0 +1,8 @@
+[{"key":"taxa_maquininha","value":"2.5"}, 
+ {"key":"meta_diaria","value":"500"}, 
+ {"key":"loja_aberta","value":"true"}, 
+ {"key":"whatsapp_loja","value":""}, 
+ {"key":"endereco_loja","value":""}, 
+ {"key":"frete_valor","value":"0"}, 
+ {"key":"frete_gratis_acima","value":"10"}, 
+ {"key":"pedido_minimo","value":"10"}]

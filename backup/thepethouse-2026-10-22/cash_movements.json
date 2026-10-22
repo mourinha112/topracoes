@@ -1,0 +1,173 @@
+[
+{
+"id": 1,
+"session_id": 1,
+"tipo": "abertura",
+"valor": 0,
+"descricao": "Abertura de caixa",
+"sale_id": null,
+"created_at": "2026-02-24T18:31:45.690844+00:00"
+},
+{
+"id": 2,
+"session_id": 2,
+"tipo": "abertura",
+"valor": 100,
+"descricao": "Abertura de caixa",
+"sale_id": null,
+"created_at": "2026-02-24T23:57:47.839454+00:00"
+},
+{
+"id": 3,
+"session_id": 2,
+"tipo": "fechamento",
+"valor": 100,
+"descricao": "Fechamento de caixa",
+"sale_id": null,
+"created_at": "2026-02-25T00:05:58.315006+00:00"
+},
+{
+"id": 4,
+"session_id": 3,
+"tipo": "abertura",
+"valor": 0,
+"descricao": "Abertura de caixa",
+"sale_id": null,
+"created_at": "2026-10-13T17:01:48.934725+00:00"
+},
+{
+"id": 5,
+"session_id": 3,
+"tipo": "fechamento",
+"valor": 452.356,
+"descricao": "Fechamento de caixa",
+"sale_id": null,
+"created_at": "2026-10-15T21:44:54.464718+00:00"
+},
+{
+"id": 6,
+"session_id": 4,
+"tipo": "abertura",
+"valor": 0,
+"descricao": "Abertura de caixa",
+"sale_id": null,
+"created_at": "2026-10-16T12:17:51.102852+00:00"
+},
+{
+"id": 7,
+"session_id": 4,
+"tipo": "fechamento",
+"valor": 257.457,
+"descricao": "Fechamento de caixa",
+"sale_id": null,
+"created_at": "2026-10-16T21:49:10.720721+00:00"
+},
+{
+"id": 8,
+"session_id": 5,
+"tipo": "abertura",
+"valor": 0,
+"descricao": "Abertura de caixa",
+"sale_id": null,
+"created_at": "2026-10-16T21:57:27.85285+00:00"
+},
+{
+"id": 9,
+"session_id": 5,
+"tipo": "fechamento",
+"valor": 198.988,
+"descricao": "Fechamento de caixa",
+"sale_id": null,
+"created_at": "2026-10-16T22:00:10.346914+00:00"
+},
+{
+"id": 10,
+"session_id": 6,
+"tipo": "abertura",
+"valor": 0,
+"descricao": "Abertura de caixa",
+"sale_id": null,
+"created_at": "2026-10-17T12:09:26.982656+00:00"
+},
+{
+"id": 11,
+"session_id": 6,
+"tipo": "fechamento",
+"valor": 165.355,
+"descricao": "Fechamento de caixa",
+"sale_id": null,
+"created_at": "2026-10-17T22:17:57.100147+00:00"
+},
+{
+"id": 12,
+"session_id": 7,
+"tipo": "abertura",
+"valor": 0,
+"descricao": "Abertura de caixa",
+"sale_id": null,
+"created_at": "2026-10-19T12:06:10.594503+00:00"
+},
+{
+"id": 13,
+"session_id": 7,
+"tipo": "fechamento",
+"valor": 37.1915,
+"descricao": "Fechamento de caixa",
+"sale_id": null,
+"created_at": "2026-10-19T15:04:14.740796+00:00"
+},
+{
+"id": 14,
+"session_id": 8,
+"tipo": "abertura",
+"valor": 0,
+"descricao": "Abertura de caixa",
+"sale_id": null,
+"created_at": "2026-10-20T12:23:07.9461+00:00"
+},
+{
+"id": 15,
+"session_id": 8,
+"tipo": "fechamento",
+"valor": 904.751,
+"descricao": "Fechamento de caixa",
+"sale_id": null,
+"created_at": "2026-10-20T22:43:35.707734+00:00"
+},
+{
+"id": 16,
+"session_id": 9,
+"tipo": "abertura",
+"valor": 0,
+"descricao": "Abertura de caixa",
+"sale_id": null,
+"created_at": "2026-10-21T11:52:02.844408+00:00"
+},
+{
+"id": 17,
+"session_id": 9,
+"tipo": "fechamento",
+"valor": 369.15,
+"descricao": "Fechamento de caixa",
+"sale_id": null,
+"created_at": "2026-10-21T22:46:27.839284+00:00"
+},
+{
+"id": 18,
+"session_id": 10,
+"tipo": "abertura",
+"valor": 0,
+"descricao": "Abertura de caixa",
+"sale_id": null,
+"created_at": "2026-10-22T12:13:14.996089+00:00"
+},
+{
+"id": 19,
+"session_id": 10,
+"tipo": "fechamento",
+"valor": 228.585,
+"descricao": "Fechamento de caixa",
+"sale_id": null,
+"created_at": "2026-10-22T22:29:24.324132+00:00"
+}
+]

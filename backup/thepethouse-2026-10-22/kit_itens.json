@@ -1,0 +1,16 @@
+[
+{
+"id": 1,
+"kit_id": 1,
+"product_id": 34,
+"tipo_venda": "saco",
+"quantidade": 1.0
+},
+{
+"id": 2,
+"kit_id": 1,
+"product_id": 269,
+"tipo_venda": "unidade",
+"quantidade": 1.0
+}
+]

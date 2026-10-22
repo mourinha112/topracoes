@@ -1,0 +1,596 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap');
+
+/* =====================================================================
+   LOJA ONLINE - Top Rações
+   Tudo aqui usa o prefixo .lj- para nao esbarrar no CSS do PDV.
+   Tema: fundo preto (a cor da logomarca) com dourado de destaque.
+   ===================================================================== */
+
+.lj-app {
+  --lj-preto: #000000;
+  --lj-carvao: #0E0E0E;
+  --lj-superficie: #161616;
+  --lj-superficie-2: #1F1F1F;
+  --lj-borda: #2A2A2A;
+  --lj-texto: #F5F5F5;
+  --lj-suave: #A3A3A3;
+  --lj-dourado: #F2B705;
+  --lj-dourado-escuro: #C8960C;
+  --lj-dourado-claro: #FFD95A;
+  --lj-texto-no-dourado: #111111;
+  --lj-dourado-fundo: rgba(242, 183, 5, 0.12);
+  --lj-dourado-linha: rgba(242, 183, 5, 0.45);
+  --lj-verde: #3DDC84;
+  --lj-verde-fundo: rgba(61, 220, 132, 0.14);
+  --lj-zap: #25D366;
+  --lj-erro: #FF5252;
+  --lj-erro-fundo: rgba(255, 82, 82, 0.14);
+
+  position: relative;
+  min-height: 100vh;
+  margin: 0 auto;
+  max-width: 560px;
+  background: var(--lj-preto);
+  color: var(--lj-texto);
+  font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+  font-size: 15px;
+  padding-bottom: 92px;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
+  -webkit-font-smoothing: antialiased;
+}
+
+.lj-app *,
+.lj-app *::before,
+.lj-app *::after { box-sizing: border-box; }
+
+.lj-app button {
+  font-family: inherit;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lj-app input,
+.lj-app textarea,
+.lj-app select { font-family: inherit; }
+.lj-app input::placeholder,
+.lj-app textarea::placeholder { color: #767676; opacity: 1; }
+
+.lj-ttl { font-family: 'Baloo 2', 'Segoe UI', sans-serif; font-weight: 800; }
+
+/* === CABECALHOS === */
+.lj-topo {
+  background: var(--lj-carvao);
+  border-bottom: 1.5px solid var(--lj-dourado-linha);
+  padding: 18px 16px 20px;
+  border-radius: 0 0 26px 26px;
+}
+.lj-topo-linha { display: flex; align-items: center; gap: 12px; }
+.lj-topo-logo { width: 52px; height: auto; flex-shrink: 0; }
+.lj-topo-oi { font-size: 19px; color: var(--lj-texto); line-height: 1.1; }
+.lj-topo-sub { font-size: 13px; font-weight: 700; color: rgba(245, 245, 245, 0.72); }
+
+.lj-topo-local {
+  display: flex; align-items: center; gap: 9px; margin-top: 14px;
+  background: var(--lj-superficie);
+  border: 1.5px solid var(--lj-dourado-linha);
+  border-radius: 999px; padding: 10px 14px;
+  font-size: 13.5px; font-weight: 800; color: var(--lj-texto);
+}
+
+.lj-barra {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--lj-carvao); padding: 14px 16px;
+  border-bottom: 1.5px solid var(--lj-dourado-linha);
+  border-radius: 0 0 20px 20px;
+}
+.lj-barra-titulo { flex-grow: 1; font-size: 19px; color: var(--lj-texto); }
+.lj-icone-btn {
+  position: relative; background: var(--lj-superficie-2);
+  border: 1px solid var(--lj-borda);
+  border-radius: 13px; width: 42px; height: 42px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+.lj-conteudo { padding: 18px 16px 24px; display: flex; flex-direction: column; gap: 18px; }
+
+/* === BLOCO "PRA QUEM E" === */
+.lj-secao-titulo { font-size: 18px; color: var(--lj-dourado-claro); line-height: 1.15; }
+.lj-secao-sub { font-size: 13px; font-weight: 700; color: var(--lj-suave); margin-top: 1px; }
+
+/* Dois botoes horizontais, na altura de um chip grande: o icone ao lado do
+   nome, e nao em cima. A versao empilhada ocupava ~100px e dominava a home
+   antes mesmo de o cliente ver um produto. */
+.lj-especies { display: flex; gap: 10px; margin-top: 10px; }
+.lj-especie {
+  flex: 1 1 0; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 9px;
+  background: var(--lj-superficie); border: 2px solid var(--lj-borda); border-radius: 16px;
+  padding: 10px 12px; min-height: 52px;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+.lj-especie:active { transform: scale(0.97); border-color: var(--lj-dourado); }
+.lj-especie span { font-size: 16px; color: var(--lj-texto); }
+.lj-especie img { width: 30px; height: 30px; }
+
+/* === CHIPS === */
+.lj-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.lj-chip {
+  border-radius: 999px; padding: 11px 16px; min-height: 44px;
+  font-size: 13.5px; font-weight: 800;
+  background: var(--lj-superficie); color: var(--lj-texto); border: 2px solid var(--lj-borda);
+}
+.lj-chip.is-on {
+  background: var(--lj-dourado); color: var(--lj-texto-no-dourado);
+  border-color: var(--lj-dourado); box-shadow: 0 3px 0 var(--lj-dourado-escuro);
+}
+.lj-chip-grow { flex-grow: 1; }
+.lj-rotulo {
+  font-size: 11.5px; font-weight: 900; color: var(--lj-suave);
+  letter-spacing: 0.6px; margin-bottom: 7px;
+}
+
+/* === CARDS DESTAQUE === */
+.lj-repetir {
+  display: flex; align-items: center; gap: 12px; text-align: left;
+  background: var(--lj-dourado-fundo); border: 2px solid rgba(242, 183, 5, 0.5);
+  border-radius: 22px; padding: 14px; width: 100%;
+}
+.lj-repetir-icone {
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 15px; background: var(--lj-dourado); flex-shrink: 0;
+}
+
+/* Faixa de ofertas da home: desenhada em HTML/CSS (logo + texto + botao),
+   sem imagem externa. O botao de fora e quem recebe o clique. */
+.lj-banner {
+  display: block; width: 100%; padding: 0; overflow: hidden;
+  border-radius: 24px; background: var(--lj-superficie);
+  border: 1.5px solid rgba(242, 183, 5, 0.5);
+  text-align: left; color: var(--lj-texto);
+}
+.lj-banner img { display: block; }
+.lj-banner-ofertas {
+  display: flex; align-items: center; gap: 14px;
+  min-height: 120px; padding: 14px 16px;
+  background: radial-gradient(circle at 0% 50%, rgba(242, 183, 5, 0.14) 0%, rgba(242, 183, 5, 0) 55%);
+}
+.lj-banner-ofertas img {
+  width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0;
+  object-fit: cover; box-shadow: 0 0 0 2px rgba(242, 183, 5, 0.55);
+}
+.lj-banner-ofertas-txt { flex-grow: 1; min-width: 0; }
+.lj-banner-ofertas-ttl { font-size: 17px; line-height: 1.15; color: var(--lj-dourado-claro); }
+.lj-banner-ofertas-sub { font-size: 12.5px; font-weight: 700; color: var(--lj-suave); margin-top: 3px; }
+.lj-banner-ofertas-btn {
+  display: inline-block; margin-top: 9px;
+  background: var(--lj-dourado); color: var(--lj-texto-no-dourado);
+  border-radius: 10px; padding: 6px 12px;
+  font-family: 'Baloo 2', sans-serif; font-size: 12.5px; font-weight: 800;
+  box-shadow: 0 2px 0 var(--lj-dourado-escuro);
+}
+
+.lj-clube {
+  position: relative; overflow: hidden; display: block; width: 100%; text-align: left;
+  background: var(--lj-carvao);
+  border: 1.5px solid rgba(242, 183, 5, 0.5);
+  border-radius: 24px; padding: 16px 140px 16px 16px; min-height: 132px;
+}
+.lj-clube-tag {
+  display: inline-block; background: var(--lj-dourado); color: var(--lj-texto-no-dourado);
+  border-radius: 999px; padding: 5px 12px;
+  font-size: 11.5px; font-weight: 900; letter-spacing: 0.8px;
+}
+.lj-clube-img { position: absolute; right: -6px; bottom: -12px; width: 120px; height: auto; }
+
+/* === PRODUTOS === */
+.lj-lista { display: flex; flex-direction: column; gap: 11px; }
+.lj-produto {
+  display: flex; align-items: center; gap: 12px; text-align: left; width: 100%;
+  background: var(--lj-superficie); border: 2px solid var(--lj-borda); border-radius: 20px; padding: 11px 12px;
+}
+.lj-produto:disabled { opacity: 0.55; }
+.lj-foto {
+  display: flex; align-items: center; justify-content: center;
+  width: 64px; height: 72px; border-radius: 15px; background: var(--lj-superficie-2); flex-shrink: 0;
+  overflow: hidden;
+}
+.lj-foto img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.lj-marca { font-size: 12px; font-weight: 900; color: var(--lj-dourado); letter-spacing: 0.4px; }
+.lj-nome { font-size: 16px; color: var(--lj-texto); line-height: 1.15; }
+.lj-tags { font-size: 12px; font-weight: 700; color: var(--lj-suave); margin-top: 2px; }
+.lj-preco { font-size: 17px; color: var(--lj-dourado); }
+.lj-preco-kg { font-size: 11.5px; font-weight: 800; color: var(--lj-suave); }
+.lj-esgotado {
+  font-size: 11.5px; font-weight: 900; color: var(--lj-erro);
+  background: var(--lj-erro-fundo); border-radius: 999px; padding: 3px 9px; display: inline-block; margin-top: 4px;
+}
+
+/* === TELA DE PRODUTO === */
+.lj-formatos { display: flex; gap: 10px; margin-top: 10px; }
+.lj-formato {
+  flex-grow: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  border-radius: 20px; padding: 14px 12px; min-height: 44px;
+  background: var(--lj-superficie); border: 2.5px solid var(--lj-borda); color: var(--lj-suave);
+}
+.lj-formato.is-on { background: var(--lj-dourado-fundo); border-color: var(--lj-dourado); color: var(--lj-texto); }
+.lj-formato b { display: block; font-family: 'Baloo 2', sans-serif; font-size: 15.5px; line-height: 1.1; }
+.lj-formato small { display: block; font-size: 11.5px; font-weight: 700; opacity: 0.78; }
+
+.lj-caixa { background: var(--lj-superficie); border: 2px solid var(--lj-borda); border-radius: 22px; padding: 16px; }
+.lj-stepper { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
+.lj-btn-redondo {
+  width: 52px; height: 52px; border-radius: 17px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.lj-btn-redondo.menos { background: var(--lj-superficie-2); border: 2px solid var(--lj-borda); }
+.lj-btn-redondo.mais { background: var(--lj-dourado); }
+.lj-btn-redondo:disabled { opacity: 0.4; cursor: not-allowed; }
+.lj-quantia { font-size: 38px; color: var(--lj-dourado-claro); line-height: 1; }
+
+.lj-aviso {
+  display: flex; align-items: center; gap: 9px; margin-top: 14px;
+  background: var(--lj-dourado-fundo); border-radius: 14px; padding: 10px 12px;
+  font-size: 12.5px; font-weight: 700; color: var(--lj-dourado-claro);
+}
+.lj-aviso.ok { background: var(--lj-verde-fundo); color: var(--lj-verde); }
+
+/* === BARRA DE ACAO === */
+.lj-acao {
+  position: sticky; bottom: 0; z-index: 5;
+  display: flex; align-items: center; gap: 12px;
+  background: var(--lj-carvao); border-top: 2px solid var(--lj-borda);
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+}
+.lj-btn {
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  border-radius: 18px; padding: 15px 14px; min-height: 52px;
+  font-family: 'Baloo 2', sans-serif; font-size: 17px; font-weight: 800;
+}
+.lj-btn-primario { background: var(--lj-dourado); color: var(--lj-texto-no-dourado); box-shadow: 0 4px 0 var(--lj-dourado-escuro); }
+.lj-btn-primario:hover { background: var(--lj-dourado-escuro); }
+.lj-btn-zap { background: var(--lj-zap); color: #fff; box-shadow: 0 4px 0 #178F45; }
+.lj-btn-amarelo { background: var(--lj-dourado-claro); color: var(--lj-texto-no-dourado); box-shadow: 0 4px 0 var(--lj-dourado-escuro); }
+.lj-btn-vazio { background: var(--lj-superficie); color: var(--lj-texto); border: 2px solid var(--lj-borda); box-shadow: none; }
+.lj-btn:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+.lj-btn-largo { width: 100%; }
+.lj-btn-cresce { flex-grow: 1; }
+
+/* === CARRINHO === */
+.lj-item {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--lj-superficie); border: 2px solid var(--lj-borda); border-radius: 20px; padding: 12px;
+}
+.lj-qtd { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.lj-qtd button {
+  width: 36px; height: 36px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.lj-qtd .menos { background: var(--lj-superficie-2); border: 2px solid var(--lj-borda); }
+.lj-qtd .mais { background: var(--lj-dourado); }
+.lj-qtd span { min-width: 30px; text-align: center; font-size: 16px; font-weight: 800; color: var(--lj-texto); }
+
+.lj-entregas { display: flex; gap: 10px; margin-top: 10px; }
+.lj-entrega {
+  flex-grow: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+  border-radius: 20px; padding: 14px 12px; min-height: 44px;
+  background: var(--lj-superficie); border: 2.5px solid var(--lj-borda); color: var(--lj-suave);
+}
+.lj-entrega.is-on { background: var(--lj-dourado-fundo); border-color: var(--lj-dourado); color: var(--lj-texto); }
+.lj-entrega b { font-family: 'Baloo 2', sans-serif; font-size: 15.5px; }
+.lj-entrega small { font-size: 11.5px; font-weight: 700; opacity: 0.8; }
+
+.lj-resumo { display: flex; flex-direction: column; gap: 8px; }
+.lj-resumo-linha { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; color: var(--lj-suave); }
+.lj-resumo-total { display: flex; justify-content: space-between; align-items: baseline; }
+.lj-resumo-total .valor { font-family: 'Baloo 2', sans-serif; font-size: 23px; font-weight: 800; color: var(--lj-dourado); }
+.lj-divisor { height: 2px; background: var(--lj-borda); border-radius: 2px; }
+
+.lj-assinatura {
+  display: flex; align-items: center; gap: 12px; text-align: left; width: 100%;
+  border-radius: 20px; padding: 14px;
+  background: var(--lj-superficie); border: 2px solid var(--lj-borda);
+}
+.lj-assinatura.is-on { background: var(--lj-dourado-fundo); border-color: rgba(242, 183, 5, 0.5); }
+.lj-switch {
+  width: 56px; height: 32px; border-radius: 999px; flex-shrink: 0;
+  display: flex; align-items: center; padding: 3px; background: #3A3A3A;
+  justify-content: flex-start; transition: background 0.15s ease;
+}
+.lj-switch.is-on { background: var(--lj-dourado); justify-content: flex-end; }
+.lj-switch i { width: 26px; height: 26px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45); }
+
+/* === FORMULARIO === */
+.lj-campo { display: flex; flex-direction: column; gap: 6px; }
+.lj-campo label { font-size: 12px; font-weight: 900; color: var(--lj-suave); letter-spacing: 0.5px; }
+.lj-campo input,
+.lj-campo textarea {
+  width: 100%; background: var(--lj-superficie-2); border: 2px solid var(--lj-borda); border-radius: 16px;
+  padding: 14px; font-size: 16px; font-weight: 700; color: var(--lj-texto); min-height: 52px;
+  outline: none; transition: border-color 0.15s ease;
+}
+.lj-campo input:focus,
+.lj-campo textarea:focus { border-color: var(--lj-dourado); }
+.lj-campo textarea { min-height: 84px; resize: vertical; }
+.lj-erro { background: var(--lj-erro-fundo); color: var(--lj-erro); border-radius: 14px; padding: 12px 14px; font-size: 13.5px; font-weight: 800; }
+
+/* === CONFIRMACAO === */
+.lj-ok {
+  min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+  background: linear-gradient(160deg, #1A1A1A 0%, #000000 100%);
+  padding: 44px 20px 28px;
+}
+.lj-ok-check {
+  display: flex; align-items: center; justify-content: center;
+  width: 92px; height: 92px; border-radius: 50%; background: var(--lj-dourado); flex-shrink: 0;
+  box-shadow: 0 0 0 8px rgba(242, 183, 5, 0.18);
+}
+.lj-ok-cartao {
+  width: 100%; background: var(--lj-superficie); border: 1.5px solid var(--lj-borda);
+  border-radius: 24px; padding: 18px;
+  margin-top: 22px; display: flex; flex-direction: column; gap: 12px;
+}
+.lj-selo {
+  background: var(--lj-dourado-fundo); color: var(--lj-dourado-claro); border-radius: 999px;
+  padding: 4px 10px; font-size: 11.5px; font-weight: 900;
+}
+
+/* === ABAS DE BAIXO === */
+.lj-abas {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
+  max-width: 560px; margin: 0 auto; height: 74px;
+  display: flex; background: var(--lj-carvao); border-top: 2px solid var(--lj-borda);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.lj-aba {
+  position: relative; flex-grow: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 3px;
+  background: transparent; color: #6B6B6B; font-size: 11.5px; font-weight: 800;
+}
+.lj-aba.is-on { color: var(--lj-dourado); }
+.lj-badge {
+  position: absolute; top: 9px; right: 50%; transform: translateX(26px);
+  min-width: 19px; height: 19px; border-radius: 10px; background: var(--lj-dourado);
+  color: var(--lj-texto-no-dourado); font-size: 11.5px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center; padding: 0 5px;
+}
+
+/* === ESTADOS === */
+.lj-vazio { text-align: center; padding: 40px 16px; color: var(--lj-suave); }
+.lj-carregando { display: flex; align-items: center; justify-content: center; min-height: 60vh; color: var(--lj-suave); font-weight: 700; }
+.lj-skeleton { height: 96px; border-radius: 20px; background: linear-gradient(90deg, #1A1A1A 25%, #262626 37%, #1A1A1A 63%); background-size: 400% 100%; animation: lj-brilho 1.3s ease infinite; }
+@keyframes lj-brilho { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+.lj-fechada {
+  background: var(--lj-erro-fundo); border: 2px solid rgba(255, 82, 82, 0.4); border-radius: 18px;
+  padding: 14px; font-size: 13.5px; font-weight: 800; color: var(--lj-erro);
+}
+
+/* Linha de opcao (saco fechado) - igual ao artefato de design */
+.lj-opcao {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  border-radius: 20px; padding: 14px; min-height: 44px;
+  background: var(--lj-superficie); border: 2.5px solid var(--lj-borda); color: var(--lj-texto);
+}
+.lj-opcao.is-on { border-color: var(--lj-dourado); }
+.lj-radio {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; box-sizing: border-box;
+  border: 3px solid #4A4A4A; background: var(--lj-superficie-2);
+}
+.lj-opcao.is-on .lj-radio { border-color: var(--lj-dourado); background: var(--lj-dourado); box-shadow: inset 0 0 0 3px var(--lj-superficie); }
+
+/* === PROMOCAO "LEVE X POR Y" === */
+.lj-promo { background: var(--lj-dourado-fundo); border-color: rgba(242, 183, 5, 0.5); }
+.lj-promo.is-on { border-color: var(--lj-dourado); background: var(--lj-superficie); }
+.lj-promo-tag {
+  flex-shrink: 0; background: var(--lj-dourado); color: var(--lj-texto-no-dourado);
+  border-radius: 999px; padding: 5px 10px; font-size: 11px; font-weight: 900; letter-spacing: 0.8px;
+}
+.lj-promo-chip {
+  display: inline-block; background: var(--lj-dourado); color: var(--lj-texto-no-dourado);
+  border-radius: 999px; padding: 3px 9px; font-size: 11.5px; font-weight: 900; white-space: nowrap;
+}
+.lj-economia { font-size: 12px; font-weight: 800; color: var(--lj-verde); margin-left: 8px; }
+.lj-acao .lj-economia { display: block; margin: 2px 0 0; white-space: nowrap; }
+
+/* === KITS === */
+.lj-kit {
+  display: flex; gap: 14px; align-items: center; width: 100%; text-align: left;
+  background: var(--lj-superficie); border: 2.5px solid rgba(242, 183, 5, 0.55); border-radius: 22px; padding: 12px;
+  box-shadow: 0 4px 0 rgba(242, 183, 5, 0.12);
+  color: var(--lj-texto);
+}
+.lj-kit:active { transform: translateY(2px); }
+.lj-kit-fotos { position: relative; flex-shrink: 0; width: 118px; height: 124px; }
+.lj-kit-fotos .lj-foto { position: absolute; left: 0; top: 0; }
+.lj-kit-foto-unica { width: 118px !important; height: 124px !important; border-radius: 20px !important; }
+.lj-kit-segundo { position: absolute; right: -6px; bottom: -8px; }
+.lj-kit-segundo .lj-foto { position: static; width: 56px; height: 62px; border-radius: 14px; border: 3px solid var(--lj-superficie); box-shadow: 0 3px 8px rgba(0,0,0,0.5); }
+.lj-kit-vezes {
+  position: absolute; left: -8px; top: -8px;
+  background: var(--lj-dourado); color: var(--lj-texto-no-dourado);
+  border-radius: 999px; padding: 3px 7px; font-size: 11.5px; font-weight: 900;
+  box-shadow: 0 2px 0 var(--lj-dourado-escuro);
+}
+.lj-kit-de { font-size: 13px; font-weight: 800; color: var(--lj-suave); text-decoration: line-through; }
+.lj-kit-btn {
+  display: inline-block; margin-top: 8px; background: var(--lj-dourado); color: var(--lj-texto-no-dourado);
+  border-radius: 12px; padding: 8px 14px; font-size: 13.5px; font-weight: 800;
+  font-family: 'Baloo 2', sans-serif; box-shadow: 0 3px 0 var(--lj-dourado-escuro);
+}
+
+/* Endereco no topo + modal */
+.lj-topo-local button { background: transparent; color: var(--lj-dourado); font-size: 12.5px; font-weight: 800; padding: 2px 4px; }
+.lj-modal-fundo {
+  position: fixed; inset: 0; z-index: 40; background: rgba(0, 0, 0, 0.72);
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.lj-modal {
+  width: 100%; max-width: 560px; background: var(--lj-superficie);
+  border-top: 1.5px solid var(--lj-dourado-linha);
+  border-radius: 26px 26px 0 0; padding: 22px 16px calc(22px + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; gap: 14px;
+  color: var(--lj-texto);
+}
+
+/* Leve tambem */
+.lj-upsell {
+  display: flex; align-items: center; gap: 12px; text-align: left; width: 100%;
+  background: var(--lj-dourado-fundo); border: 2px solid rgba(242, 183, 5, 0.5);
+  border-radius: 20px; padding: 10px 12px;
+}
+.lj-upsell-mais {
+  width: 38px; height: 38px; border-radius: 13px; background: var(--lj-dourado);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+/* =====================================================================
+   BARRA DE ACAO PRESA NO PE DA TELA
+   Antes era position:sticky, mas como ela e o ultimo elemento nao havia
+   nada abaixo para "grudar": em tela curta ela subia junto com o texto.
+   ===================================================================== */
+.lj-acao {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 20;
+  max-width: 560px;
+  margin: 0 auto;
+  border-top: 2px solid var(--lj-borda, #2A2A2A);
+  background: var(--lj-carvao, #0E0E0E);
+  box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.55);
+}
+.lj-acao.com-abas { bottom: 74px; }
+.lj-espaco-acao { height: 92px; }
+.lj-espaco-acao.com-abas { height: 96px; }
+
+/* === RESPOSTA AO TOQUE === */
+.lj-app button { transition: transform 0.09s ease, filter 0.12s ease, box-shadow 0.12s ease; }
+.lj-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+.lj-produto:active:not(:disabled),
+.lj-repetir:active,
+.lj-upsell:active,
+.lj-banner:active,
+.lj-clube:active,
+.lj-opcao:active,
+.lj-formato:active:not(:disabled),
+.lj-entrega:active { transform: scale(0.985); filter: brightness(1.08); }
+.lj-chip:active { transform: scale(0.94); }
+.lj-btn-redondo:active:not(:disabled) { transform: scale(0.9); }
+.lj-icone-btn:active { transform: scale(0.92); }
+
+/* === BOLINHAS PULANDO === */
+.lj-pulando {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 26px 0 6px;
+}
+.lj-pulando span { font-size: 13.5px; font-weight: 800; color: var(--lj-suave, #A3A3A3); }
+.lj-bolinhas { display: flex; gap: 8px; align-items: flex-end; height: 22px; }
+.lj-bolinhas i {
+  width: 11px; height: 11px; border-radius: 50%; display: block;
+  animation: lj-pula 0.62s ease-in-out infinite;
+}
+.lj-bolinhas i:nth-child(1) { background: #F2B705; animation-delay: 0s; }
+.lj-bolinhas i:nth-child(2) { background: #FFD95A; animation-delay: 0.12s; }
+.lj-bolinhas i:nth-child(3) { background: #F2B705; animation-delay: 0.24s; }
+@keyframes lj-pula {
+  0%, 100% { transform: translateY(0); opacity: 0.65; }
+  50% { transform: translateY(-11px); opacity: 1; }
+}
+
+/* === GIRO DENTRO DO BOTAO === */
+.lj-girando { animation: lj-gira 0.75s linear infinite; }
+@keyframes lj-gira { to { transform: rotate(360deg); } }
+
+/* === ESQUELETO ENQUANTO CARREGA === */
+.lj-esqueleto { pointer-events: none; }
+.lj-brilho {
+  background: linear-gradient(90deg, #1A1A1A 25%, #2A2A2A 37%, #1A1A1A 63%);
+  background-size: 400% 100%;
+  animation: lj-brilha 1.25s ease infinite;
+}
+@keyframes lj-brilha {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* === ENTRADA DE TELA === */
+.lj-entra { animation: lj-sobe 0.24s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes lj-sobe {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* === PULO DO CONTADOR DO CARRINHO === */
+.lj-pulsa { animation: lj-pulso 0.34s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes lj-pulso {
+  0% { transform: scale(0.5); }
+  60% { transform: scale(1.28); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lj-entra, .lj-pulsa, .lj-bolinhas i, .lj-girando, .lj-brilho { animation: none; }
+}
+
+/* =====================================================================
+   CARREGANDO AO TROCAR DE TELA
+   ===================================================================== */
+.lj-progresso {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+  max-width: 560px; margin: 0 auto; height: 3px;
+  background: rgba(242, 183, 5, 0.22); overflow: hidden;
+}
+.lj-progresso i {
+  display: block; height: 100%; width: 40%;
+  background: linear-gradient(90deg, #F2B705, #FFD95A, #F2B705);
+  animation: lj-corre 0.6s ease-in-out infinite;
+}
+@keyframes lj-corre {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(320%); }
+}
+
+.lj-pilula {
+  position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 61;
+  background: rgba(22, 22, 22, 0.97);
+  border: 1px solid rgba(242, 183, 5, 0.35);
+  border-radius: 999px; padding: 9px 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+  animation: lj-aparece 0.16s ease-out;
+}
+.lj-pilula .lj-bolinhas { height: 16px; }
+.lj-pilula .lj-bolinhas i { width: 9px; height: 9px; animation-duration: 0.45s; }
+@keyframes lj-aparece {
+  from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* =====================================================================
+   MEUS PEDIDOS
+   ===================================================================== */
+.lj-pedido {
+  background: var(--lj-superficie); border: 2px solid var(--lj-borda, #2A2A2A);
+  border-radius: 20px; padding: 14px;
+  display: flex; flex-direction: column; gap: 11px;
+}
+.lj-pedido-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.lj-pedido-status {
+  font-size: 11px; font-weight: 900; letter-spacing: 0.4px;
+  padding: 5px 11px; border-radius: 999px; white-space: nowrap; text-transform: uppercase;
+}
+.lj-pedido-itens { display: flex; flex-direction: column; gap: 5px; }
+.lj-pedido-itens > div {
+  display: flex; justify-content: space-between; gap: 10px;
+  font-size: 13px; font-weight: 700; color: #D4D4D4;
+}
+.lj-pedido-pe {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  border-top: 2px dashed var(--lj-borda, #2A2A2A); padding-top: 10px;
+  font-size: 12.5px; font-weight: 700; color: var(--lj-suave, #A3A3A3);
+}
+.lj-pedido-pe strong {
+  font-family: 'Baloo 2', sans-serif; font-size: 19px; font-weight: 800; color: var(--lj-dourado, #F2B705);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lj-progresso i, .lj-pilula { animation: none; }
+}

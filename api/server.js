@@ -1,0 +1,1083 @@
+// api/server.js - Servidor Express para desenvolvimento
+import express from 'express';
+import cors from 'cors';
+import { createClient } from '@supabase/supabase-js';
+import crypto from 'crypto';
+
+const app = express();
+const PORT = 3001;
+
+const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+if (!supabaseUrl || !supabaseKey) { console.error('Crie o arquivo .env (copie o .env.example).'); process.exit(1); }
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+app.use(cors());
+app.use(express.json());
+
+function hashPassword(password) {
+  return crypto.createHash('sha256').update(password).digest('hex');
+}
+
+// Auth - Check if has users
+app.get('/api/auth/check', async (req, res) => {
+  try {
+    const { data, error } = await supabase.from('users').select('id').limit(1);
+    res.json({ hasUsers: data?.length > 0 });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Auth - Setup (primeiro usuário)
+app.post('/api/auth/setup', async (req, res) => {
+  try {
+    const { nome, login, senha } = req.body;
+    
+    const { data: newUser, error } = await supabase
+      .from('users')
+      .insert([{
+        nome: nome || login,
+        login,
+        senha_hash: hashPassword(senha),
+        role: 'admin'
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    const token = Buffer.from(`${newUser.id}:${Date.now()}`).toString('base64');
+    
+    res.json({
+      token,
+      user: {
+        id: newUser.id,
+        nome: newUser.nome,
+        login: newUser.login,
+        role: newUser.role
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Auth - Login/Register
+app.post('/api/auth', async (req, res) => {
+  try {
+    const { action, login, senha, nome } = req.body;
+
+    if (action === 'login') {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('login', login)
+        .eq('senha_hash', hashPassword(senha))
+        .single();
+
+      if (error || !data) {
+        return res.status(401).json({ error: 'Login ou senha incorretos' });
+      }
+
+      const token = Buffer.from(`${data.id}:${Date.now()}`).toString('base64');
+      return res.json({
+        token,
+        user: {
+          id: data.id,
+          nome: data.nome,
+          login: data.login,
+          role: data.role
+        }
+      });
+    }
+
+    if (action === 'register') {
+      const { data: existing } = await supabase
+        .from('users')
+        .select('id')
+        .eq('login', login)
+        .single();
+
+      if (existing) {
+        return res.status(400).json({ error: 'Login já existe' });
+      }
+
+      const { data: newUser, error } = await supabase
+        .from('users')
+        .insert([{
+          nome: nome || login,
+          login,
+          senha_hash: hashPassword(senha),
+          role: 'admin'
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      return res.status(201).json({
+        id: newUser.id,
+        nome: newUser.nome,
+        login: newUser.login,
+        role: newUser.role
+      });
+    }
+
+    return res.status(400).json({ error: 'Ação inválida' });
+  } catch (error) {
+    console.error('Auth Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Products
+app.get('/api/products', async (req, res) => {
+  try {
+    const { search } = req.query;
+    
+    let query = supabase.from('products').select('*').eq('ativo', 1).order('nome');
+    
+    if (search) {
+      query = query.or(`nome.ilike.%${search}%,marca.ilike.%${search}%`);
+    }
+    
+    const { data, error } = await query;
+    if (error) throw error;
+    res.json(data || []);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Products - Search (para o PDV)
+app.get('/api/products/search/:term', async (req, res) => {
+  try {
+    const { term } = req.params;
+    
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('ativo', 1)
+      .or(`nome.ilike.%${term}%,marca.ilike.%${term}%`)
+      .limit(20);
+    
+    if (error) throw error;
+    res.json(data || []);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/products/movements', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('stock_movements')
+      .select('*, products(nome)')
+      .order('created_at', { ascending: false })
+      .limit(100);
+    
+    if (error) throw error;
+    res.json(data || []);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/products', async (req, res) => {
+  try {
+    const { data, error } = await supabase.from('products').insert([req.body]).select();
+    if (error) throw error;
+    res.status(201).json(data[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/products/:id', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .update({ ...req.body, updated_at: new Date().toISOString() })
+      .eq('id', req.params.id)
+      .select();
+    if (error) throw error;
+    res.json(data[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/products/:id', async (req, res) => {
+  try {
+    const { error } = await supabase
+      .from('products')
+      .update({ ativo: 0 })
+      .eq('id', req.params.id);
+    if (error) throw error;
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Entrada de estoque
+app.post('/api/products/:id/stock', async (req, res) => {
+  try {
+    const { quantidade_kg, motivo } = req.body;
+    const productId = req.params.id;
+
+    // Atualizar estoque
+    const { data: product } = await supabase
+      .from('products')
+      .select('estoque_kg')
+      .eq('id', productId)
+      .single();
+
+    const newStock = (product?.estoque_kg || 0) + quantidade_kg;
+
+    await supabase
+      .from('products')
+      .update({ estoque_kg: newStock })
+      .eq('id', productId);
+
+    // Registrar movimentação
+    await supabase.from('stock_movements').insert([{
+      product_id: productId,
+      tipo: 'entrada',
+      quantidade_kg: quantidade_kg,
+      motivo: motivo || 'Entrada manual'
+    }]);
+
+    res.json({ success: true, estoque_kg: newStock });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Sales
+app.get('/api/sales', async (req, res) => {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const { data, error } = await supabase
+      .from('sales')
+      .select('*, clients(nome)')
+      .gte('created_at', today)
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    res.json(data || []);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/sales', async (req, res) => {
+  try {
+    const { items, ...saleData } = req.body;
+    
+    const { data: newSale, error: saleError } = await supabase
+      .from('sales')
+      .insert([saleData])
+      .select();
+    
+    if (saleError) throw saleError;
+    const saleId = newSale[0].id;
+
+    for (const item of items) {
+      await supabase.from('sale_items').insert([{
+        sale_id: saleId,
+        product_id: item.product_id,
+        tipo_venda: item.tipo_venda,
+        quantidade_kg: item.quantidade_kg,
+        preco_unitario: item.preco_unitario,
+        subtotal: item.subtotal
+      }]);
+
+      const qty = item.tipo_venda === 'saco' ? item.quantidade_kg * (item.peso_saco || 1) : item.quantidade_kg;
+
+      await supabase.from('stock_movements').insert([{
+        product_id: item.product_id,
+        tipo: 'saida',
+        quantidade_kg: -qty,
+        motivo: `Venda #${saleId}`,
+        sale_id: saleId
+      }]);
+    }
+
+    res.status(201).json(newSale[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Dashboard
+app.get('/api/dashboard', async (req, res) => {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const firstDayOfMonth = new Date();
+    firstDayOfMonth.setDate(1);
+    const monthStart = firstDayOfMonth.toISOString().split('T')[0];
+
+    // Vendas de hoje
+    const { data: todaySales } = await supabase
+      .from('sales')
+      .select('id, total, forma_pagamento')
+      .gte('created_at', today);
+
+    const todayTotal = todaySales?.reduce((sum, s) => sum + (s.total || 0), 0) || 0;
+    const todayCount = todaySales?.length || 0;
+    const ticketMedio = todayCount > 0 ? todayTotal / todayCount : 0;
+
+    // Vendas do mês
+    const { data: monthSales } = await supabase
+      .from('sales')
+      .select('id, total')
+      .gte('created_at', monthStart);
+
+    const monthTotal = monthSales?.reduce((sum, s) => sum + (s.total || 0), 0) || 0;
+
+    // Estoque total e custos (ração em kg, outros em unidade)
+    const { data: products } = await supabase
+      .from('products')
+      .select('id, categoria, estoque_kg, estoque_unidade, preco_por_kg, preco_unitario, custo_por_kg, custo_saco, peso_saco_kg, custo_unitario')
+      .eq('ativo', 1);
+
+    const isRacao = (p) => !p.categoria || p.categoria === 'racao';
+
+    async function custoDasVendas(saleIds) {
+      if (!saleIds?.length) return 0;
+      const { data: items } = await supabase.from('sale_items').select('product_id, quantidade_kg, tipo_venda').in('sale_id', saleIds);
+      let custo = 0;
+      for (const item of items || []) {
+        const prod = products?.find(x => x.id === item.product_id);
+        if (!prod) continue;
+        const qty = item.quantidade_kg || 0;
+        if (!isRacao(prod)) {
+          custo += qty * (prod.custo_unitario || 0);
+        } else if (item.tipo_venda === 'saco') {
+          const peso = prod.peso_saco_kg || 1;
+          custo += (qty / peso) * (prod.custo_saco || 0);
+        } else {
+          custo += qty * (prod.custo_por_kg || 0);
+        }
+      }
+      return custo;
+    }
+    const todaySaleIds = (todaySales || []).map(s => s.id).filter(Boolean);
+    const monthSaleIds = (monthSales || []).map(s => s.id).filter(Boolean);
+    const custoDia = await custoDasVendas(todaySaleIds);
+    const custoMes = await custoDasVendas(monthSaleIds);
+    const lucroDia = todayTotal - custoDia;
+    const lucroMes = monthTotal - custoMes;
+
+    const totalEstoque = products?.filter(isRacao).reduce((sum, p) => sum + (p.estoque_kg || 0), 0) || 0;
+    const totalEstoqueUn = products?.filter(p => !isRacao(p)).reduce((sum, p) => sum + (p.estoque_unidade || 0), 0) || 0;
+    const valorEstoque = (products || []).reduce((sum, p) => {
+      if (isRacao(p)) return sum + ((p.estoque_kg || 0) * (p.preco_por_kg || 0));
+      return sum + ((p.estoque_unidade || 0) * (p.preco_unitario || 0));
+    }, 0);
+
+    // Despesas pendentes
+    const { data: expenses } = await supabase
+      .from('expenses')
+      .select('valor')
+      .eq('pago', 0);
+
+    const despesasPendentes = expenses?.reduce((sum, e) => sum + (e.valor || 0), 0) || 0;
+
+    // Meta diária
+    const { data: metaData } = await supabase
+      .from('settings')
+      .select('value')
+      .eq('key', 'meta_diaria')
+      .single();
+
+    const metaDiaria = parseFloat(metaData?.value || '500');
+    const metaAtingida = (todayTotal / metaDiaria) * 100;
+
+    // Últimas vendas
+    const { data: ultimasVendas } = await supabase
+      .from('sales')
+      .select('*, clients(nome)')
+      .order('created_at', { ascending: false })
+      .limit(5);
+
+    // Produtos com estoque baixo (ração: kg < 10; unidade: un < mínimo)
+    const { data: allProductsAlert } = await supabase
+      .from('products')
+      .select('id, nome, marca, categoria, estoque_kg, estoque_unidade, estoque_minimo_dias, estoque_minimo_unidade')
+      .eq('ativo', 1);
+    const estoqueBaixo = (allProductsAlert || [])
+      .filter(p => isRacao(p) ? (p.estoque_kg || 0) < 10 : (p.estoque_unidade ?? 0) < (p.estoque_minimo_unidade || 1))
+      .slice(0, 10)
+      .map(p => isRacao(p)
+        ? { id: p.id, nome: p.nome, marca: p.marca, tipo_estoque: 'kg', estoque_kg: p.estoque_kg, estoque_unidade: null, estoque_minimo_dias: p.estoque_minimo_dias || 7 }
+        : { id: p.id, nome: p.nome, marca: p.marca, tipo_estoque: 'un', estoque_kg: null, estoque_unidade: p.estoque_unidade ?? 0, estoque_minimo_unidade: p.estoque_minimo_unidade || 0 });
+
+    // Vendas por pagamento
+    const payments = {};
+    todaySales?.forEach(s => {
+      const forma = s.forma_pagamento || 'outros';
+      payments[forma] = (payments[forma] || 0) + s.total;
+    });
+
+    res.json({
+      faturamento_dia: todayTotal,
+      vendas_dia: todayCount,
+      ticket_medio: ticketMedio,
+      faturamento_mes: monthTotal,
+      custo_dia: custoDia,
+      custo_mes: custoMes,
+      lucro_dia: lucroDia,
+      lucro_mes: lucroMes,
+      estoque_total_kg: totalEstoque,
+      estoque_total_unidade: totalEstoqueUn,
+      valor_estoque: valorEstoque,
+      total_produtos: products?.length || 0,
+      despesas_pendentes: despesasPendentes,
+      meta_diaria: metaDiaria,
+      meta_percent: metaAtingida,
+      pagamentos: payments,
+      ultimas_vendas: ultimasVendas || [],
+      alertas_estoque: estoqueBaixo || [],
+      estoque_baixo: estoqueBaixo || [],
+      top_produtos: []
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Dashboard alerts
+app.get('/api/dashboard/alerts', async (req, res) => {
+  try {
+    const { data } = await supabase
+      .from('products')
+      .select('nome, estoque_kg, estoque_minimo_dias')
+      .eq('ativo', 1)
+      .lt('estoque_kg', 10)
+      .order('estoque_kg')
+      .limit(10);
+    
+    res.json(data || []);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Generic - Clientes, Despesas, etc
+// Cashier - Sessão atual
+app.get('/api/cashier/current', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('cash_sessions')
+      .select('*')
+      .eq('status', 'aberto')
+      .order('opened_at', { ascending: false })
+      .limit(1)
+      .single();
+    
+    if (error && error.code !== 'PGRST116') throw error;
+    
+    if (data) {
+      // Buscar movimentações
+      const { data: movements } = await supabase
+        .from('cash_movements')
+        .select('*')
+        .eq('session_id', data.id)
+        .order('created_at', { ascending: false });
+      
+      data.movements = movements || [];
+    }
+    
+    res.json(data || null);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Cashier - Abrir sessão
+app.post('/api/cashier/open', async (req, res) => {
+  try {
+    const { saldo_inicial } = req.body;
+    
+    // Verificar se já existe sessão aberta
+    const { data: existing } = await supabase
+      .from('cash_sessions')
+      .select('id')
+      .eq('status', 'aberto')
+      .single();
+    
+    if (existing) {
+      return res.status(400).json({ error: 'Já existe uma sessão aberta' });
+    }
+    
+    const { data, error } = await supabase
+      .from('cash_sessions')
+      .insert([{ saldo_inicial: saldo_inicial || 0, status: 'aberto' }])
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    // Registrar movimentação
+    await supabase.from('cash_movements').insert([{
+      session_id: data.id,
+      tipo: 'abertura',
+      valor: saldo_inicial || 0,
+      descricao: 'Abertura de caixa'
+    }]);
+    
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Cashier - Fechar sessão
+app.post('/api/cashier/close', async (req, res) => {
+  try {
+    const { id, saldo_final, observacao } = req.body;
+    
+    const { data, error } = await supabase
+      .from('cash_sessions')
+      .update({ status: 'fechado', saldo_final, observacao_fechamento: observacao, closed_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Cashier - Movimentações
+app.post('/api/cashier/movement', async (req, res) => {
+  try {
+    const { session_id, tipo, valor, descricao } = req.body;
+    
+    const { data, error } = await supabase
+      .from('cash_movements')
+      .insert([{ session_id, tipo, valor, descricao }])
+      .select()
+      .single();
+    
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Cashier - Histórico
+app.get('/api/cashier/history', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('cash_sessions')
+      .select('*')
+      .eq('status', 'fechado')
+      .order('closed_at', { ascending: false })
+      .limit(20);
+    
+    if (error) throw error;
+    res.json(data || []);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Expenses: lista com filtro por mês (despesas do mês + recorrentes) — antes do generic
+app.get('/api/expenses', async (req, res) => {
+  try {
+    const mes = req.query.mes || new Date().toISOString().slice(0, 7);
+    const pagoFilter = req.query.pago;
+    const [y, m] = mes.split('-').map(Number);
+    const mesInicio = new Date(y, m - 1, 1).toISOString().split('T')[0];
+    const mesFim = new Date(y, m, 0).toISOString().split('T')[0];
+    const { data: noMes, error: err1 } = await supabase
+      .from('expenses')
+      .select('*')
+      .gte('data_vencimento', mesInicio)
+      .lte('data_vencimento', mesFim)
+      .order('data_vencimento', { ascending: true });
+    if (err1) throw err1;
+    const { data: rec, error: err2 } = await supabase
+      .from('expenses')
+      .select('*')
+      .or('recorrente.eq.1,recorrente.eq.true')
+      .order('data_vencimento', { ascending: true });
+    if (err2) throw err2;
+    const seen = new Set((noMes || []).map(e => e.id));
+    const noMesDesc = new Set((noMes || []).map(e => `${e.descricao}|${e.categoria || ''}`));
+    const recUniq = (rec || []).filter(e => {
+      if (seen.has(e.id)) return false;
+      const expMes = e.data_vencimento ? e.data_vencimento.slice(0, 7) : '';
+      if (expMes === mes) return seen.add(e.id);
+      if (noMesDesc.has(`${e.descricao}|${e.categoria || ''}`)) return false;
+      return seen.add(e.id);
+    });
+    let list = [...(noMes || []), ...recUniq].map(e => {
+      const isRec = e.recorrente === 1 || e.recorrente === true;
+      const expMes = e.data_vencimento ? e.data_vencimento.slice(0, 7) : '';
+      if (isRec && expMes !== mes) return { ...e, pago: 0, data_vencimento: mesInicio };
+      return e;
+    }).sort((a, b) => (a.data_vencimento || '').localeCompare(b.data_vencimento || ''));
+    if (pagoFilter === 'true' || pagoFilter === '1') list = list.filter(e => e.pago);
+    if (pagoFilter === 'false' || pagoFilter === '0') list = list.filter(e => !e.pago);
+    res.json(list);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/expenses/summary', async (req, res) => {
+  try {
+    const mes = req.query.mes || new Date().toISOString().slice(0, 7);
+    const [y, m] = mes.split('-').map(Number);
+    const mesInicio = new Date(y, m - 1, 1).toISOString().split('T')[0];
+    const mesFim = new Date(y, m, 0).toISOString().split('T')[0];
+    const { data: noMes } = await supabase.from('expenses').select('id, valor, pago, categoria').gte('data_vencimento', mesInicio).lte('data_vencimento', mesFim);
+    const { data: rec } = await supabase.from('expenses').select('id, valor, pago, categoria').or('recorrente.eq.1,recorrente.eq.true');
+    const seen = new Set((noMes || []).map(e => e.id));
+    const recUniq = (rec || []).filter(e => !seen.has(e.id) && seen.add(e.id));
+    const items = [...(noMes || []), ...recUniq];
+    const total = items.reduce((s, e) => s + (Number(e.valor) || 0), 0);
+    const pago = items.filter(e => e.pago).reduce((s, e) => s + (Number(e.valor) || 0), 0);
+    const pendente = total - pago;
+    const porCat = {};
+    items.forEach(e => { const c = e.categoria || 'outros'; porCat[c] = (porCat[c] || 0) + (Number(e.valor) || 0); });
+    const por_categoria = Object.entries(porCat).map(([categoria, total]) => ({ categoria, total }));
+    res.json({ mes, total, pago, pendente, por_categoria });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/expenses', async (req, res) => {
+  try {
+    const body = req.body || {};
+    const { tipo_recorrencia, ...rest } = body;
+    const row = {
+      descricao: rest.descricao,
+      categoria: rest.categoria || 'outros',
+      valor: Number(rest.valor) || 0,
+      pago: rest.pago === true || rest.pago === 1 ? 1 : 0,
+      recorrente: rest.recorrente === true || rest.recorrente === 1 ? 1 : 0,
+      tipo_recorrencia: tipo_recorrencia || 'nenhum',
+    };
+    if (rest.data_vencimento && rest.data_vencimento !== '') row.data_vencimento = rest.data_vencimento;
+    else if (row.recorrente) row.data_vencimento = new Date().toISOString().slice(0, 7) + '-01';
+    if (rest.data_inicio && rest.data_inicio !== '') row.data_inicio = rest.data_inicio;
+    if (rest.data_fim && rest.data_fim !== '') row.data_fim = rest.data_fim;
+    const { data, error } = await supabase.from('expenses').insert([row]).select();
+    if (error) throw error;
+    res.status(201).json(data[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/expenses/:id/toggle-pago', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const mesParam = req.query.mes;
+    const { data: expense, error: getErr } = await supabase.from('expenses').select('*').eq('id', id).single();
+    if (getErr || !expense) return res.status(404).json({ error: 'Despesa não encontrada' });
+    const expMes = expense.data_vencimento ? expense.data_vencimento.slice(0, 7) : '';
+    const isRec = expense.recorrente === 1 || expense.recorrente === true;
+    const mes = mesParam || expMes || new Date().toISOString().slice(0, 7);
+    if (isRec && expMes !== mes) {
+      const mesInicio = mes + '-01';
+      const { data: existing } = await supabase.from('expenses').select('id, pago').eq('descricao', expense.descricao).eq('categoria', expense.categoria || 'outros').eq('data_vencimento', mesInicio).maybeSingle();
+      if (existing) {
+        const novoPago = existing.pago ? 0 : 1;
+        const { data: updated } = await supabase.from('expenses').update({ pago: novoPago, data_pagamento: novoPago ? new Date().toISOString().split('T')[0] : null }).eq('id', existing.id).select().single();
+        return res.json(updated);
+      }
+      const { data: newRow, error: insErr } = await supabase.from('expenses').insert([{
+        descricao: expense.descricao,
+        categoria: expense.categoria || 'outros',
+        valor: expense.valor,
+        data_vencimento: mesInicio,
+        pago: 1,
+        data_pagamento: new Date().toISOString().split('T')[0],
+        recorrente: 0,
+        tipo_recorrencia: expense.tipo_recorrencia || 'nenhum',
+      }]).select().single();
+      if (insErr) throw insErr;
+      return res.json(newRow);
+    }
+    const novoPago = expense.pago ? 0 : 1;
+    const { data, error } = await supabase.from('expenses').update({ pago: novoPago, data_pagamento: novoPago ? new Date().toISOString().split('T')[0] : null }).eq('id', id).select().single();
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/expenses/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    const body = req.body || {};
+    const { tipo_recorrencia, ...rest } = body;
+    const row = {
+      descricao: rest.descricao,
+      categoria: rest.categoria || 'outros',
+      valor: Number(rest.valor) || 0,
+      pago: rest.pago === true || rest.pago === 1 ? 1 : 0,
+      recorrente: rest.recorrente === true || rest.recorrente === 1 ? 1 : 0,
+      tipo_recorrencia: tipo_recorrencia || 'nenhum',
+    };
+    if (rest.data_vencimento != null) row.data_vencimento = rest.data_vencimento || null;
+    if (rest.data_inicio != null) row.data_inicio = rest.data_inicio || null;
+    if (rest.data_fim != null) row.data_fim = rest.data_fim || null;
+    const { data, error } = await supabase.from('expenses').update(row).eq('id', id).select().single();
+    if (error) throw error;
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/expenses/:id', async (req, res) => {
+  try {
+    const { error } = await supabase.from('expenses').delete().eq('id', req.params.id);
+    if (error) throw error;
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+const genericTables = ['clients', 'fixed_costs', 'settings'];
+
+genericTables.forEach(table => {
+  app.get(`/api/${table}`, async (req, res) => {
+    try {
+      const { data, error } = await supabase.from(table).select('*').order('id');
+      if (error) throw error;
+      res.json(data || []);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post(`/api/${table}`, async (req, res) => {
+    try {
+      const { data, error } = await supabase.from(table).insert([req.body]).select();
+      if (error) throw error;
+      res.status(201).json(data[0]);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.put(`/api/${table}/:id`, async (req, res) => {
+    try {
+      const { data, error } = await supabase
+        .from(table)
+        .update(req.body)
+        .eq('id', req.params.id)
+        .select();
+      if (error) throw error;
+      res.json(data[0]);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.delete(`/api/${table}/:id`, async (req, res) => {
+    try {
+      const { error } = await supabase
+        .from(table)
+        .delete()
+        .eq('id', req.params.id);
+      if (error) throw error;
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+});
+
+// ========== REPORTS ==========
+
+// Custos fixos (alias /api/costs -> fixed_costs)
+app.get('/api/costs', async (req, res) => {
+  try {
+    const { data, error } = await supabase.from('fixed_costs').select('*').order('id');
+    if (error) throw error;
+    res.json(data || []);
+  } catch (error) { res.status(500).json({ error: error.message }); }
+});
+app.post('/api/costs', async (req, res) => {
+  try {
+    const { data, error } = await supabase.from('fixed_costs').insert([req.body]).select();
+    if (error) throw error;
+    res.status(201).json(data[0]);
+  } catch (error) { res.status(500).json({ error: error.message }); }
+});
+app.delete('/api/costs/:id', async (req, res) => {
+  try {
+    const { error } = await supabase.from('fixed_costs').delete().eq('id', req.params.id);
+    if (error) throw error;
+    res.json({ success: true });
+  } catch (error) { res.status(500).json({ error: error.message }); }
+});
+
+// Reports - Resumo mensal
+app.get('/api/reports/summary', async (req, res) => {
+  try {
+    const mes = req.query.mes || new Date().toISOString().slice(0, 7);
+    const [y, m] = mes.split('-').map(Number);
+    const mesInicio = new Date(y, m - 1, 1).toISOString().split('T')[0];
+    const mesFim = new Date(y, m, 0).toISOString().split('T')[0];
+
+    // Vendas do mês
+    const { data: sales } = await supabase
+      .from('sales')
+      .select('id, total, forma_pagamento, created_at')
+      .gte('created_at', mesInicio)
+      .lte('created_at', mesFim + 'T23:59:59');
+
+    const faturamento_mes = (sales || []).reduce((s, v) => s + (v.total || 0), 0);
+    const total_vendas = (sales || []).length;
+
+    // Custo dos produtos vendidos
+    const saleIds = (sales || []).map(s => s.id).filter(Boolean);
+    const { data: products } = await supabase
+      .from('products')
+      .select('id, nome, categoria, custo_por_kg, custo_saco, peso_saco_kg, custo_unitario')
+      .eq('ativo', 1);
+
+    const isRacao = (p) => !p.categoria || p.categoria === 'racao';
+    let custo_produtos = 0;
+    if (saleIds.length > 0) {
+      const { data: items } = await supabase.from('sale_items').select('product_id, quantidade_kg, tipo_venda').in('sale_id', saleIds);
+      for (const item of items || []) {
+        const prod = (products || []).find(x => x.id === item.product_id);
+        if (!prod) continue;
+        const qty = item.quantidade_kg || 0;
+        if (!isRacao(prod)) {
+          custo_produtos += qty * (prod.custo_unitario || 0);
+        } else if (item.tipo_venda === 'saco') {
+          custo_produtos += (qty / (prod.peso_saco_kg || 1)) * (prod.custo_saco || 0);
+        } else {
+          custo_produtos += qty * (prod.custo_por_kg || 0);
+        }
+      }
+    }
+
+    const lucro_bruto = faturamento_mes - custo_produtos;
+
+    // Custos fixos
+    const { data: fixedCosts } = await supabase.from('fixed_costs').select('valor');
+    const custos_fixos = (fixedCosts || []).reduce((s, c) => s + (Number(c.valor) || 0), 0);
+
+    // Despesas do mês
+    const { data: expensesData } = await supabase
+      .from('expenses')
+      .select('valor, pago, categoria')
+      .gte('data_vencimento', mesInicio)
+      .lte('data_vencimento', mesFim);
+    const despesas_mes = (expensesData || []).reduce((s, e) => s + (Number(e.valor) || 0), 0);
+    const despesas_pagas = (expensesData || []).filter(e => e.pago).reduce((s, e) => s + (Number(e.valor) || 0), 0);
+
+    // Despesas por categoria
+    const despCat = {};
+    (expensesData || []).forEach(e => {
+      const c = e.categoria || 'outros';
+      despCat[c] = (despCat[c] || 0) + (Number(e.valor) || 0);
+    });
+    const despesas_por_categoria = Object.entries(despCat).map(([categoria, total]) => ({ categoria, total }));
+
+    // Taxa maquininha
+    const { data: taxaData } = await supabase.from('settings').select('value').eq('key', 'taxa_maquininha').single();
+    const taxa_maquininha = parseFloat(taxaData?.value || '0');
+    const vendas_cartao = (sales || []).filter(s => s.forma_pagamento === 'cartao' || s.forma_pagamento === 'debito' || s.forma_pagamento === 'credito');
+    const total_cartao = vendas_cartao.reduce((s, v) => s + (v.total || 0), 0);
+    const custo_maquininha = total_cartao * (taxa_maquininha / 100);
+
+    const lucro_liquido = lucro_bruto - custos_fixos - custo_maquininha - despesas_mes;
+
+    // Vendas por forma de pagamento
+    const pagMap = {};
+    (sales || []).forEach(s => {
+      const f = s.forma_pagamento || 'outros';
+      if (!pagMap[f]) pagMap[f] = { vendas: 0, total: 0 };
+      pagMap[f].vendas++;
+      pagMap[f].total += s.total || 0;
+    });
+    const vendas_por_pagamento = Object.entries(pagMap).map(([forma_pagamento, d]) => ({ forma_pagamento, ...d }));
+
+    // Top produtos do mês
+    let top_produtos = [];
+    if (saleIds.length > 0) {
+      const { data: allItems } = await supabase.from('sale_items').select('product_id, subtotal, quantidade_kg').in('sale_id', saleIds);
+      const prodMap = {};
+      (allItems || []).forEach(i => {
+        if (!prodMap[i.product_id]) prodMap[i.product_id] = { total: 0, qty: 0 };
+        prodMap[i.product_id].total += i.subtotal || 0;
+        prodMap[i.product_id].qty += i.quantidade_kg || 0;
+      });
+      const prodNames = {};
+      (products || []).forEach(p => { prodNames[p.id] = p; });
+      top_produtos = Object.entries(prodMap)
+        .map(([id, d]) => ({ id, nome: prodNames[id]?.nome || 'Desconhecido', total: d.total, quantidade: d.qty }))
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 10);
+    }
+
+    // Vendas por dia do mês (para gráfico)
+    const vendas_por_dia = [];
+    const diasNoMes = new Date(y, m, 0).getDate();
+    for (let d = 1; d <= diasNoMes; d++) {
+      const dia = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const vendasDia = (sales || []).filter(s => s.created_at && s.created_at.startsWith(dia));
+      vendas_por_dia.push({
+        dia: String(d).padStart(2, '0'),
+        data: dia,
+        vendas: vendasDia.length,
+        faturamento: vendasDia.reduce((s, v) => s + (v.total || 0), 0)
+      });
+    }
+
+    res.json({
+      mes,
+      faturamento_mes,
+      total_vendas,
+      custo_produtos,
+      lucro_bruto,
+      custos_fixos,
+      despesas_mes,
+      despesas_pagas,
+      despesas_por_categoria,
+      custo_maquininha,
+      taxa_maquininha,
+      lucro_liquido,
+      vendas_por_pagamento,
+      top_produtos,
+      vendas_por_dia,
+      ticket_medio: total_vendas > 0 ? faturamento_mes / total_vendas : 0,
+      margem_bruta: faturamento_mes > 0 ? (lucro_bruto / faturamento_mes) * 100 : 0,
+      margem_liquida: faturamento_mes > 0 ? (lucro_liquido / faturamento_mes) * 100 : 0,
+    });
+  } catch (error) {
+    console.error('Reports summary error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Reports - Faturamento diário (últimos 30 dias)
+app.get('/api/reports/daily', async (req, res) => {
+  try {
+    const dias = parseInt(req.query.dias) || 30;
+    const dataInicio = new Date();
+    dataInicio.setDate(dataInicio.getDate() - dias);
+    const inicio = dataInicio.toISOString().split('T')[0];
+
+    const { data: sales } = await supabase
+      .from('sales')
+      .select('id, total, created_at')
+      .gte('created_at', inicio)
+      .order('created_at', { ascending: true });
+
+    const byDay = {};
+    (sales || []).forEach(s => {
+      const dia = s.created_at?.split('T')[0] || '';
+      if (!byDay[dia]) byDay[dia] = { data: dia, vendas: 0, faturamento: 0 };
+      byDay[dia].vendas++;
+      byDay[dia].faturamento += s.total || 0;
+    });
+
+    // Preencher dias sem vendas
+    const result = [];
+    const current = new Date(inicio);
+    const today = new Date();
+    while (current <= today) {
+      const dia = current.toISOString().split('T')[0];
+      result.push(byDay[dia] || { data: dia, vendas: 0, faturamento: 0 });
+      current.setDate(current.getDate() + 1);
+    }
+
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Reports - Faturamento mensal (últimos 12 meses)
+app.get('/api/reports/monthly', async (req, res) => {
+  try {
+    const meses = parseInt(req.query.meses) || 12;
+    const dataInicio = new Date();
+    dataInicio.setMonth(dataInicio.getMonth() - meses);
+    dataInicio.setDate(1);
+    const inicio = dataInicio.toISOString().split('T')[0];
+
+    const { data: sales } = await supabase
+      .from('sales')
+      .select('id, total, created_at')
+      .gte('created_at', inicio)
+      .order('created_at', { ascending: true });
+
+    const byMonth = {};
+    (sales || []).forEach(s => {
+      const mes = s.created_at?.slice(0, 7) || '';
+      if (!byMonth[mes]) byMonth[mes] = { mes, vendas: 0, faturamento: 0 };
+      byMonth[mes].vendas++;
+      byMonth[mes].faturamento += s.total || 0;
+    });
+
+    // Preencher meses sem vendas
+    const result = [];
+    const current = new Date(dataInicio);
+    const now = new Date();
+    while (current <= now) {
+      const mes = current.toISOString().slice(0, 7);
+      result.push(byMonth[mes] || { mes, vendas: 0, faturamento: 0 });
+      current.setMonth(current.getMonth() + 1);
+    }
+
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Reports - Vendas detalhadas (com itens)
+app.get('/api/reports/sales-detail', async (req, res) => {
+  try {
+    const mes = req.query.mes || new Date().toISOString().slice(0, 7);
+    const [y, m] = mes.split('-').map(Number);
+    const mesInicio = new Date(y, m - 1, 1).toISOString().split('T')[0];
+    const mesFim = new Date(y, m, 0).toISOString().split('T')[0];
+
+    const { data, error } = await supabase
+      .from('sales')
+      .select('*, clients(nome), sale_items(*, products(nome, categoria))')
+      .gte('created_at', mesInicio)
+      .lte('created_at', mesFim + 'T23:59:59')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    res.json(data || []);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Tudo que nao tiver rota propria aqui cai no mesmo handler que roda na
+// Vercel (api/index.js). E assim que a loja online e os pedidos funcionam
+// tambem em desenvolvimento, sem precisar duplicar codigo.
+import vercelHandler from './index.js';
+
+app.all('/api/*', (req, res) => vercelHandler(req, res));
+
+app.listen(PORT, () => {
+  console.log(`API rodando em http://localhost:${PORT}`);
+});

@@ -1,0 +1,14 @@
+[
+{
+"id": 1,
+"descricao": "Aluguel ",
+"valor": 500,
+"created_at": "2026-05-01T20:09:10.456435+00:00"
+},
+{
+"id": 2,
+"descricao": "Internet ",
+"valor": 110,
+"created_at": "2026-05-01T20:09:26.678871+00:00"
+}
+]

@@ -1,0 +1,13 @@
+[
+{
+"id": 1,
+"nome": "kit quatree gourmet mais sache",
+"descricao": null,
+"preco": 131.0,
+"foto_url": null,
+"ativo": true,
+"visivel_loja": true,
+"created_at": "2026-09-09T17:33:06.08969+00:00",
+"updated_at": "2026-09-09T17:33:05.361+00:00"
+}
+]

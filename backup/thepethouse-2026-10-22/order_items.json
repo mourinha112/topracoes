@@ -1,0 +1,72 @@
+[
+{
+"id": 1,
+"order_id": 1,
+"product_id": 266,
+"descricao": "Besser raças pequenas - Fracionado 2 kg",
+"tipo_venda": "kg",
+"quantidade_kg": 2.0,
+"preco_unitario": 11.4514,
+"subtotal": 22.9
+},
+{
+"id": 2,
+"order_id": 2,
+"product_id": 34,
+"descricao": "Quatree Quatree Gourmet Gatos Castrados mix de carne - Fracionado 9 kg",
+"tipo_venda": "kg",
+"quantidade_kg": 9.0,
+"preco_unitario": 18.0063,
+"subtotal": 162.06
+},
+{
+"id": 3,
+"order_id": 2,
+"product_id": 101,
+"descricao": "mini osso 3 mini osso - 1 un",
+"tipo_venda": "unidade",
+"quantidade_kg": 1.0,
+"preco_unitario": 1.5,
+"subtotal": 1.5
+},
+{
+"id": 4,
+"order_id": 3,
+"product_id": 34,
+"descricao": "Quatree Quatree Gourmet Gatos Castrados mix de carne - Fracionado 6 kg",
+"tipo_venda": "kg",
+"quantidade_kg": 6.0,
+"preco_unitario": 18.0063,
+"subtotal": 108.04
+},
+{
+"id": 5,
+"order_id": 3,
+"product_id": 101,
+"descricao": "mini osso 3 mini osso - 1 un",
+"tipo_venda": "unidade",
+"quantidade_kg": 1.0,
+"preco_unitario": 1.5,
+"subtotal": 1.5
+},
+{
+"id": 6,
+"order_id": 4,
+"product_id": 34,
+"descricao": "Quatree Quatree Gourmet Gatos Castrados mix de carne - Fracionado 6 kg",
+"tipo_venda": "kg",
+"quantidade_kg": 6.0,
+"preco_unitario": 18.0063,
+"subtotal": 108.04
+},
+{
+"id": 7,
+"order_id": 4,
+"product_id": 101,
+"descricao": "mini osso 3 mini osso - 1 un",
+"tipo_venda": "unidade",
+"quantidade_kg": 1.0,
+"preco_unitario": 1.5,
+"subtotal": 1.5
+}
+]

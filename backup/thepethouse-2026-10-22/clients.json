@@ -1,0 +1,245 @@
+[
+{
+"id": 1,
+"nome": "Jeanne",
+"whatsapp": "21979215146",
+"tipo_pet": "Cao",
+"racao_utilizada": "Golden RP - FRANGO E ARROZ",
+"ultima_compra": null,
+"created_at": "2026-03-04T18:57:37.558896+00:00"
+},
+{
+"id": 2,
+"nome": "Evelin",
+"whatsapp": "21983759279",
+"tipo_pet": "Gato",
+"racao_utilizada": "Whiskas",
+"ultima_compra": null,
+"created_at": "2026-03-04T21:13:54.880283+00:00"
+},
+{
+"id": 3,
+"nome": "Wallace",
+"whatsapp": "21981947047",
+"tipo_pet": "Cão",
+"racao_utilizada": "Premier",
+"ultima_compra": null,
+"created_at": "2026-03-04T22:04:37.155286+00:00"
+},
+{
+"id": 4,
+"nome": "Cosme",
+"whatsapp": "21981366747",
+"tipo_pet": "Cao",
+"racao_utilizada": "Foster",
+"ultima_compra": null,
+"created_at": "2026-03-04T22:17:52.598067+00:00"
+},
+{
+"id": 5,
+"nome": "Lucas Morais",
+"whatsapp": "21965463018",
+"tipo_pet": "Cao",
+"racao_utilizada": "Quatree",
+"ultima_compra": null,
+"created_at": "2026-03-04T22:31:53.682949+00:00"
+},
+{
+"id": 6,
+"nome": "Gabriela Carvalho",
+"whatsapp": "21971745191",
+"tipo_pet": "Cao",
+"racao_utilizada": "Golden e Premier",
+"ultima_compra": null,
+"created_at": "2026-03-05T12:33:21.395275+00:00"
+},
+{
+"id": 7,
+"nome": "Elaine Ferreira",
+"whatsapp": "21998581943",
+"tipo_pet": "Cao",
+"racao_utilizada": "Foster",
+"ultima_compra": null,
+"created_at": "2026-03-06T21:56:47.962095+00:00"
+},
+{
+"id": 8,
+"nome": "Andressa Botelho",
+"whatsapp": "21998912870",
+"tipo_pet": "Cao",
+"racao_utilizada": "Golden",
+"ultima_compra": null,
+"created_at": "2026-03-06T22:53:09.07273+00:00"
+},
+{
+"id": 9,
+"nome": "Selma",
+"whatsapp": "21959238218",
+"tipo_pet": "Gato",
+"racao_utilizada": "Golden",
+"ultima_compra": null,
+"created_at": "2026-03-07T13:38:15.72326+00:00"
+},
+{
+"id": 10,
+"nome": "Patricia Tavares",
+"whatsapp": "21981782364",
+"tipo_pet": "Cao",
+"racao_utilizada": "Leis",
+"ultima_compra": null,
+"created_at": "2026-03-10T14:37:58.860282+00:00"
+},
+{
+"id": 11,
+"nome": "Henrique",
+"whatsapp": "21970015750",
+"tipo_pet": "Cao, Passad",
+"racao_utilizada": "Golden",
+"ultima_compra": null,
+"created_at": "2026-03-10T14:57:09.456984+00:00"
+},
+{
+"id": 12,
+"nome": "Matheus Brum",
+"whatsapp": "21987844591",
+"tipo_pet": "Cao",
+"racao_utilizada": "Matilha, Quatree RP",
+"ultima_compra": null,
+"created_at": "2026-03-10T15:20:31.564779+00:00"
+},
+{
+"id": 13,
+"nome": "Margot Giardino",
+"whatsapp": "21994215323",
+"tipo_pet": "Cao, Gato, Galo, Tartaruga",
+"racao_utilizada": "Especial Dog, Quatree e Golden",
+"ultima_compra": null,
+"created_at": "2026-03-10T15:34:05.508128+00:00"
+},
+{
+"id": 14,
+"nome": "Emerson Souza",
+"whatsapp": "21999710552",
+"tipo_pet": "Cao",
+"racao_utilizada": "Golden",
+"ultima_compra": null,
+"created_at": "2026-03-10T16:58:24.578098+00:00"
+},
+{
+"id": 15,
+"nome": "Rosimere Maria",
+"whatsapp": "",
+"tipo_pet": "Passaro",
+"racao_utilizada": "Asanorte",
+"ultima_compra": null,
+"created_at": "2026-03-10T18:47:03.19827+00:00"
+},
+{
+"id": 16,
+"nome": "Isaias Vitorio",
+"whatsapp": "21980610093",
+"tipo_pet": "Cao, Passaro",
+"racao_utilizada": "Golden Trent, Quatree Life",
+"ultima_compra": null,
+"created_at": "2026-03-10T22:15:25.388868+00:00"
+},
+{
+"id": 17,
+"nome": "Ze Roberto",
+"whatsapp": "21993223154",
+"tipo_pet": "Cao",
+"racao_utilizada": "Pedigree",
+"ultima_compra": null,
+"created_at": "2026-03-11T13:31:54.801847+00:00"
+},
+{
+"id": 18,
+"nome": "Raquel Lourenssoni",
+"whatsapp": "21993618172",
+"tipo_pet": "Gato",
+"racao_utilizada": "Whiskas Castrados",
+"ultima_compra": null,
+"created_at": "2026-03-11T14:00:21.087265+00:00"
+},
+{
+"id": 19,
+"nome": "Gentil Luiz",
+"whatsapp": "21993593651",
+"tipo_pet": "Cao",
+"racao_utilizada": "Golden",
+"ultima_compra": null,
+"created_at": "2026-03-11T22:19:06.82275+00:00"
+},
+{
+"id": 20,
+"nome": "Larissa Lima",
+"whatsapp": "21974202601",
+"tipo_pet": "Cao",
+"racao_utilizada": "Royal Canin, Dog Chow, Quatree Life",
+"ultima_compra": null,
+"created_at": "2026-03-12T21:06:42.628432+00:00"
+},
+{
+"id": 21,
+"nome": "Karen Eleoni",
+"whatsapp": "21964044349",
+"tipo_pet": "Cao Shitzu 9 meses",
+"racao_utilizada": "Golden, Quatree",
+"ultima_compra": null,
+"created_at": "2026-03-13T15:32:40.687858+00:00"
+},
+{
+"id": 22,
+"nome": "Jaqueline Rodrigues",
+"whatsapp": "21968397731",
+"tipo_pet": "Cao",
+"racao_utilizada": "Kanina",
+"ultima_compra": null,
+"created_at": "2026-03-13T19:14:20.55031+00:00"
+},
+{
+"id": 23,
+"nome": "Felipe Santos",
+"whatsapp": "21995100408",
+"tipo_pet": "Cao",
+"racao_utilizada": "Golden",
+"ultima_compra": null,
+"created_at": "2026-03-16T15:18:39.800484+00:00"
+},
+{
+"id": 24,
+"nome": "Stefany ",
+"whatsapp": "21980918367",
+"tipo_pet": "Gato, Cachorro",
+"racao_utilizada": "Quatree Life",
+"ultima_compra": null,
+"created_at": "2026-03-16T16:44:21.801485+00:00"
+},
+{
+"id": 25,
+"nome": "Camila Pessoa",
+"whatsapp": "21992002786",
+"tipo_pet": "Cao",
+"racao_utilizada": "Pedigree, Dog Chow, Quatree",
+"ultima_compra": null,
+"created_at": "2026-03-18T21:48:51.472921+00:00"
+},
+{
+"id": 26,
+"nome": "Anderson M L FALCE",
+"whatsapp": "21986131173",
+"tipo_pet": "",
+"racao_utilizada": "Besser raças pequenas - Fracionado 2 kg",
+"ultima_compra": null,
+"created_at": "2026-08-30T01:36:29.01581+00:00"
+},
+{
+"id": 27,
+"nome": "André",
+"whatsapp": "21985131173",
+"tipo_pet": "",
+"racao_utilizada": "Quatree Quatree Gourmet Gatos Castrados mix de carne - Fracionado 6 kg",
+"ultima_compra": null,
+"created_at": "2026-09-03T16:47:36.805429+00:00"
+}
+]
