@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import AvisoAtualizacao, { AVISO_ATUALIZACAO_ATIVO } from './components/AvisoAtualizacao';
 
 /*
  * Tres aplicacoes moram no mesmo deploy:
@@ -27,5 +28,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter basename={app.base}>
       <App qual={app.nome} />
     </BrowserRouter>
+    {AVISO_ATUALIZACAO_ATIVO && <AvisoAtualizacao />}
   </React.StrictMode>
 );
