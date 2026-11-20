@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 // Liga/desliga o aviso. false = sistema volta ao normal.
-export const AVISO_ATUALIZACAO_ATIVO = true;
+export const AVISO_ATUALIZACAO_ATIVO = false;
 
 export default function AvisoAtualizacao() {
   useEffect(() => {

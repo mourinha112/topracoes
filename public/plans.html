@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Top Rações — Plans</title>
+<style>
+  :root{
+    --bg:#0e1116; --card:#161b22; --line:#232a35; --txt:#e6edf3; --muted:#9aa7b4;
+    --gold:#e0b64a; --green:#2f9e52; --green-soft:#193d28;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  body{background:radial-gradient(1200px 600px at 50% -10%,#18202b,var(--bg));color:var(--txt);min-height:100vh;
+    display:flex;flex-direction:column;align-items:center;padding:40px 16px 60px}
+  .logo{width:140px;height:140px;object-fit:contain;border-radius:24px;margin-bottom:10px;
+    box-shadow:0 10px 40px rgba(0,0,0,.45)}
+  h1{font-size:26px;font-weight:800;letter-spacing:.5px;margin-bottom:4px;text-align:center}
+  .sub{color:var(--muted);font-size:14px;margin-bottom:34px;text-align:center}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;width:100%;max-width:760px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px 26px;position:relative;overflow:hidden}
+  .card.vital{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset,0 14px 50px rgba(224,182,74,.12)}
+  .tag{position:absolute;top:16px;right:16px;font-size:11px;font-weight:700;letter-spacing:.5px;
+    padding:5px 11px;border-radius:999px;text-transform:uppercase}
+  .tag.basic{background:#1d2735;color:#7fb2ff}
+  .tag.vital{background:var(--gold);color:#241c00}
+  .num{font-size:13px;color:var(--muted);font-weight:700;letter-spacing:1px}
+  .name{font-size:22px;font-weight:800;margin:4px 0 14px}
+  .price{display:flex;align-items:baseline;gap:6px;margin-bottom:6px}
+  .price b{font-size:40px;font-weight:800}
+  .price .cur{font-size:18px;color:var(--muted);font-weight:700}
+  .cycle{font-size:13px;color:var(--muted);margin-bottom:22px}
+  .cycle.free{color:var(--gold);font-weight:700}
+  ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+  li{display:flex;gap:10px;font-size:14px;line-height:1.35;color:#d4dbe3}
+  li svg{flex:none;margin-top:1px}
+  .foot{margin-top:26px;font-size:12px;color:var(--muted);text-align:center;line-height:1.5}
+</style>
+</head>
+<body>
+  <img class="logo" src="logo-grande.png" alt="Top Rações" onerror="this.src='logo.png'" />
+  <h1>Top Rações — System Plans</h1>
+  <p class="sub">Choose the plan that fits your store. Prices in BRL (R$).</p>
+
+  <div class="grid">
+    <!-- PLAN 1 -->
+    <div class="card">
+      <span class="tag basic">Plan 1</span>
+      <div class="num">BASIC</div>
+      <div class="name">Standard API</div>
+      <div class="price"><span class="cur">R$</span><b>1.984</b></div>
+      <div class="cycle">Monthly subscription required</div>
+      <ul>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2f9e52" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Full management system (POS)</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2f9e52" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Online store &amp; order panel</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2f9e52" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Standard API access</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2f9e52" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Updates included while subscription is active</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2f9e52" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Support via subscription</li>
+      </ul>
+    </div>
+
+    <!-- PLAN 2 -->
+    <div class="card vital">
+      <span class="tag vital">Plan 2</span>
+      <div class="num">LIFETIME</div>
+      <div class="name">Lifetime API</div>
+      <div class="price"><span class="cur">R$</span><b>2.600</b></div>
+      <div class="cycle free">One-time payment — no monthly fee</div>
+      <ul>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e0b64a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Everything in the Basic plan</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e0b64a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg><b>Lifetime API — no monthly subscription</b></li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e0b64a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Pay once, use forever</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e0b64a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Updates included when available</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e0b64a" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="foot">Top Rações · System &amp; API plans<br/>Contact the system owner for activation.</p>
+</body>
+</html>

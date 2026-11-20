@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import AvisoAtualizacao, { AVISO_ATUALIZACAO_ATIVO } from './components/AvisoAtualizacao';
+import AvisoConcluido, { AVISO_CONCLUIDO_ATIVO } from './components/AvisoConcluido';
 
 /*
  * Tres aplicacoes moram no mesmo deploy:
@@ -29,5 +30,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <App qual={app.nome} />
     </BrowserRouter>
     {AVISO_ATUALIZACAO_ATIVO && <AvisoAtualizacao />}
+    {!AVISO_ATUALIZACAO_ATIVO && AVISO_CONCLUIDO_ATIVO && <AvisoConcluido />}
   </React.StrictMode>
 );
